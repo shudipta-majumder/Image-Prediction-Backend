@@ -1,0 +1,78 @@
+# =======================
+# Python / Django
+# =======================
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+instance/
+.webassets-cache
+db.sqlite3
+*.db
+*.bak
+*.swp
+*.swo
+*.~ 
+.idea/
+.vscode/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.DS_Store
+local_settings.py
+.env
+.env.*
+*.secret
+
+# Django media/static (optional)
+media/
+staticfiles/
+static/
+
+# =======================
+# Node.js / Next.js
+# =======================
+node_modules/
+.next/
+out/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# Next.js build outputs
+.next/
+out/
+build/
+
+# VS Code
+.vscode/
+
+# Mac system files
+.DS_Store
+
+# Log files
+*.log
+
+# =======================
+# Others
+# =======================
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
