@@ -1,10 +1,9 @@
 {
-    "version": 2,
     "builds": [
-      { "src": "ml/asgi.py", "use": "@vercel/python" }
+      { "src": "ml/wsgi.py", "use": "@vercel/python" }
     ],
     "routes": [
-      { "src": "/(.*)", "dest": "ml/asgi.py" }
+      { "src": "/(.*)", "dest": "ml/wsgi.py" }
     ]
   }
   
