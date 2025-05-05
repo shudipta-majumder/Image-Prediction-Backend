@@ -2,6 +2,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.transforms as transforms
+from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+import os
 
 def accuracy(outputs,labels):
     _,preds= torch.max(outputs, dim=1)
@@ -63,3 +67,24 @@ class Cifar10CnnModel(ImageClassificationBase):
 
     def forward(self, xb):
         return self.network(xb)
+    
+
+class UploadsImage(models.Model):
+    image = models.ImageField(upload_to='uploads/',  blank=True, null=True)
+
+class MisclassifiedImage(models.Model):
+    image = models.ImageField(upload_to='misclassified/',  blank=True, null=True)
+
+# Auto delete file when UploadsImage object is deleted
+@receiver(post_delete, sender=UploadsImage)
+def delete_uploads_image_file(sender, instance, **kwargs):
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
+
+# Auto delete file when MisclassifiedImage object is deleted
+@receiver(post_delete, sender=MisclassifiedImage)
+def delete_misclassified_image_file(sender, instance, **kwargs):
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)

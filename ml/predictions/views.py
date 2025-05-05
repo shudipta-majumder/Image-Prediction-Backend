@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.conf import settings
+from .models import Cifar10CnnModel, UploadsImage, MisclassifiedImage  # Import models
+from django.core.files import File
 import os
 
 from .models import Cifar10CnnModel  # Import your model class
@@ -50,14 +52,18 @@ class PredictImageView(APIView):
         image_path = os.path.join(UPLOAD_DIR, image_name)
         img.save(image_path)
 
+        # ✅ Save to UploadsImage model
+        with open(image_path, 'rb') as f:
+            uploads_instance = UploadsImage.objects.create(image=File(f, name=image_name))
+
         # Apply transformations
         img_tensor = transform(img).unsqueeze(0).to(device)
 
         # Make prediction
         with torch.no_grad():
             outputs = model(img_tensor)
-            probabilities = torch.nn.functional.softmax(outputs, dim=1)  # Convert to probabilities
-            max_prob, predicted = torch.max(probabilities, 1)  # Get highest probability 
+            probabilities = torch.nn.functional.softmax(outputs, dim=1)
+            max_prob, predicted = torch.max(probabilities, 1)
 
         max_prob = max_prob.item()
         predicted_label = CLASSES[predicted.item()] if max_prob >= 0.5 else "not matched"
@@ -70,11 +76,15 @@ class PredictImageView(APIView):
             misclassified_path = os.path.join(MISCLASSIFIED_DIR, misclassified_name)
             img.save(misclassified_path)
 
+            # ✅ Save to MisclassifiedImage model
+            with open(misclassified_path, 'rb') as f:
+                misclassified_instance = MisclassifiedImage.objects.create(image=File(f, name=misclassified_name))
+
         # Generate image URL
         image_url = request.build_absolute_uri(settings.MEDIA_URL + f"uploads/{image_name}")
 
         return Response({
             "predicted_label": predicted_label,
-            "confidence": round(max_prob * 100, 2),  # Show probability as a percentage
-            "image_url": image_url  # Direct image preview URL
+            "confidence": round(max_prob * 100, 2),
+            "image_url": image_url
         }, status=200)
