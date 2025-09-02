@@ -28,7 +28,7 @@ The project integrates **Django + Django REST Framework + ML (scikit-learn / Ten
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/your-username/django-ml-project.git
+git clone https://github.com/shudipta-majumder/Image-Prediction-Backend.git
 cd django-ml-project
 2️⃣ Create Virtual Environment
 python -m venv venv
